@@ -329,6 +329,10 @@ const createWindow = async () => {
         if (!mainWindow) {
             throw new Error('"mainWindow" is not defined');
         }
+        const windowBounds = store.get('window_bounds');
+        if (windowBounds) {
+            mainWindow.setBounds(windowBounds);
+        }
         if (process.env.START_MINIMIZED) {
             mainWindow.minimize();
         } else {
@@ -344,6 +348,7 @@ const createWindow = async () => {
     let saved = false;
 
     mainWindow.on('close', (event) => {
+        store.set('window_bounds', mainWindow?.getBounds());
         if (!exitFromTray && store.get('window_exit_to_tray')) {
             if (isMacOS() && !forceQuit) {
                 exitFromTray = true;
